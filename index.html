@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Simulasi Psikotes Masuk SMA</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f7f6;
+            color: #333;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+        }
+        .container {
+            background-color: #fff;
+            max-width: 600px;
+            width: 100%;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        h1 {
+            text-align: center;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+        .question {
+            display: none;
+        }
+        .question.active {
+            display: block;
+        }
+        .question-text {
+            font-size: 18px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .pre-text {
+            font-family: monospace;
+            background: #eee;
+            padding: 10px;
+            border-radius: 5px;
+            white-space: pre;
+            overflow-x: auto;
+            margin-bottom: 15px;
+        }
+        .options {
+            list-style: none;
+            padding: 0;
+        }
+        .options li {
+            margin-bottom: 10px;
+        }
+        .options button {
+            width: 100%;
+            text-align: left;
+            padding: 12px 15px;
+            border: 2px solid #e0e0e0;
+            border-radius: 8px;
+            background-color: #fff;
+            cursor: pointer;
+            font-size: 16px;
+            transition: all 0.2s;
+        }
+        .options button:hover {
+            background-color: #e8f4fd;
+            border-color: #3498db;
+        }
+        .result {
+            display: none;
+            text-align: center;
+        }
+        .score {
+            font-size: 48px;
+            font-weight: bold;
+            color: #2ecc71;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <h1>Psikotes Gambar SMA</h1>
+
+    <div class="question active" id="q1">
+        <div class="question-text">Soal 1: Jaring-Jaring Kubus. Jika dilipat, sisi mana yang berhadapan langsung dengan sisi [DEPAN]?</div>
+        <div class="pre-text">       [ BINTANG ] (Atas)
+           │
+[ KIRI ]—[ DEPAN ]—[ KANAN ]—[ BELAKANG ]
+           │
+       [LINGKARAN] (Bawah)</div>
+        <ul class="options">
+            <li><button onclick="nextQuestion(1, 'A')">A. Bintang</button></li>
+            <li><button onclick="nextQuestion(1, 'B')">B. Lingkaran</button></li>
+            <li><button onclick="nextQuestion(1, 'C')">C. Belakang</button></li>
+            <li><button onclick="nextQuestion(1, 'D')">D. Tidak bisa ditentukan</button></li>
+        </ul>
+    </div>
+
+    <div class="question" id="q2">
+        <div class="question-text">Soal 2: Pencerminan Gambar. Bagaimanakah bentuk bayangan huruf F tersebut di dalam cermin?</div>
+        <div class="pre-text">   │
+█▀▀│  ?
+█  │
+   │
+ CERMIN</div>
+        <ul class="options">
+            <li><button onclick="nextQuestion(2, 'A')">A. Garis panjang tetap di kiri, garis pendek menghadap kiri</button></li>
+            <li><button onclick="nextQuestion(2, 'B')">B. Garis panjang pindah ke kanan, garis pendek menghadap kiri</button></li>
+            <li><button onclick="nextQuestion(2, 'C')">C. Huruf F menjadi terbalik ke bawah</button></li>
+            <li><button onclick="nextQuestion(2, 'D')">D. Bentuknya tetap sama persis</button></li>
+        </ul>
+    </div>
+
+    <div class="question" id="q3">
+        <div class="question-text">Soal 3: Pola Deret Gambar. Ke arah manakah jarum pada Gambar 4 akan menunjuk?</div>
+        <div class="pre-text">  Gambar 1        Gambar 2        Gambar 3        Gambar 4
+    (12)            (12)            (12)            (12)
+     ▲               │               │               │
+(9)──┼──(3)     (9)──┼──►(3)    (9)──┼──(3)     (9)──┼──(3)
+     │               │               ▼               │
+    (6)             (6)             (6)             (6)</div>
+        <ul class="options">
+            <li><button onclick="nextQuestion(3, 'A')">A. Jam 7</button></li>
+            <li><button onclick="nextQuestion(3, 'B')">B. Jam 8</button></li>
+            <li><button onclick="nextQuestion(3, 'C')">C. Jam 9</button></li>
+            <li><button onclick="nextQuestion(3, 'D')">D. Jam 12</button></li>
+        </ul>
+    </div>
+
+    <div class="result" id="resultBlock">
+        <h2>Ujian Selesai!</h2>
+        <p>Skor Kamu:</p>
+        <div class="score" id="scoreDisplay">0 / 3</div>
+        <p id="feedback"></p>
+        <button onclick="location.reload()" style="padding: 10px 20px; border-radius: 5px; border: none; background: #3498db; color: white; cursor: pointer;">Ulangi Tes</button>
+    </div>
+</div>
+
+<script>
+    let currentAnswers = {};
+    const correctAnswers = { 1: 'C', 2: 'B', 3: 'C' };
+
+    function nextQuestion(currentNum, answer) {
+        currentAnswers[currentNum] = answer;
+        document.getElementById('q' + currentNum).classList.remove('active');
+        
+        let nextNum = currentNum + 1;
+        let nextQuestionEl = document.getElementById('q' + nextNum);
+        
+        if (nextQuestionEl) {
+            nextQuestionEl.classList.add('active');
+        } else {
+            showResult();
+        }
+    }
+
+    function showResult() {
+        document.getElementById('resultBlock').style.display = 'block';
+        let score = 0;
+        
+        for (let key in correctAnswers) {
+            if (currentAnswers[key] === correctAnswers[key]) {
+                score++;
+            }
+        }
+        
+        document.getElementById('scoreDisplay').innerText = score + " / 3";
+        
+        let feedbackText = "";
+        if(score === 3) {
+            feedbackText = "Luar biasa! Kamu menjawab semua soal spasial dengan sempurna!";
+        } else if (score === 2) {
+            feedbackText = "Bagus sekali! Hanya kurang teliti di satu soal.";
+        } else {
+            feedbackText = "Jangan berkecil hati, latih lagi kemampuan visualisasimu ya!";
+        }
+        document.getElementById('feedback').innerText = feedbackText;
+    }
+</script>
+
+</body>
+</html>
